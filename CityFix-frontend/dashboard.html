@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<!-- 
+    Page Tableau de bord utilisateur - CityFix
+    Description : Affiche la liste des signalements créés par l'utilisateur connecté
+-->
+<html lang="fr">
+<head>
+    <!-- Encodage des caractères UTF-8 -->
+    <meta charset="UTF-8">
+    <!-- Meta viewport pour le responsive design -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Titre de la page -->
+    <title>Mon tableau de bord - CityFix</title>
+    <meta name="description" content="Gérez vos signalements et suivez leur évolution">
+
+    <!-- ============================================
+         SECTION DES STYLES CSS
+         ============================================ -->
+    <style>
+        /* Importation des polices Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+
+        /* 
+         * DEFINITION DES VARIABLES CSS
+         * Design System complet
+         */
+        :root {
+            --color-primary: #3A86FF;
+            --color-primary-dark: #2563eb;
+            --color-primary-light: #60a5fa;
+            --color-success: #06D6A0;
+            --color-warning: #FFA500;
+            --color-danger: #FF4D4D;
+            --color-white: #FFFFFF;
+            --color-dark: #1e293b;
+            --color-dark-secondary: #475569;
+            --color-light: #f8fafc;
+            --color-light-secondary: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Style global */
+        body {
+            font-family: 'Poppins', 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            color: var(--color-dark);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* 
+         * NAVIGATION
+         */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--color-dark-secondary);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover {
+            color: var(--color-primary);
+        }
+
+        /* 
+         * CONTENEUR PRINCIPAL
+         */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* 
+         * EN-TÊTE DU TABLEAU DE BORD
+         */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .welcome-section h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-section p {
+            color: var(--color-dark-secondary);
+        }
+
+        /* 
+         * BOUTONS D'ACTIONS
+         */
+        .actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            color: var(--color-white);
+            box-shadow: 0 4px 14px 0 rgba(58, 134, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(58, 134, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--color-white);
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-primary);
+            color: var(--color-white);
+        }
+
+        .btn-danger {
+            background: var(--color-danger);
+            color: var(--color-white);
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        /* 
+         * CARTES DE STATISTIQUES
+         */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--color-white);
+            padding: 1.5rem;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon.blue { background: rgba(58, 134, 255, 0.1); color: var(--color-primary); }
+        .stat-icon.green { background: rgba(6, 214, 160, 0.1); color: var(--color-success); }
+        .stat-icon.orange { background: rgba(255, 165, 0, 0.1); color: var(--color-warning); }
+        .stat-icon.red { background: rgba(255, 77, 77, 0.1); color: var(--color-danger); }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--color-dark-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* 
+         * GRILLE DES SIGNALEMENTS
+         */
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .signalements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* 
+         * CARTE DE SIGNALEMENT
+         */
+        .signalement-card {
+            background: var(--color-white);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .signalement-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .card-header {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--color-light-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .card-type {
+            font-size: 0.75rem;
+            color: var(--color-dark-secondary);
+            background: var(--color-light);
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+        }
+
+        .card-body {
+            padding: 1.25rem;
+        }
+
+        .card-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--color-dark-secondary);
+        }
+
+        .info-item svg {
+            width: 16px;
+            height: 16px;
+            opacity: 0.7;
+        }
+
+        /* 
+         * BADGE DE STATUT
+         */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge.pending {
+            background: rgba(255, 165, 0, 0.1);
+            color: #d97706;
+        }
+
+        .status-badge.in-progress {
+            background: rgba(255, 77, 77, 0.1);
+            color: #dc2626;
+        }
+
+        .status-badge.resolved {
+            background: rgba(6, 214, 160, 0.1);
+            color: #059669;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        /* 
+         * ÉTATS DE CHARGEMENT
+         */
+        .loading-message, .error-message {
+            text-align: center;
+            padding: 3rem;
+            color: var(--color-dark-secondary);
+        }
+
+        .loading-message {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--color-light-secondary);
+            border-top-color: var(--color-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: var(--color-danger);
+        }
+
+        /* 
+         * RESPONSIVE
+         */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .actions {
+                width: 100%;
+            }
+
+            .btn {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .signalements-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--color-white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            color: var(--color-light-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-state h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: var(--color-dark-secondary);
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24" fill="white">
+                    <path d="M12 2C8.68629 2 6 4.68629 6 8C6 12.5 12 22 12 22C12 22 18 12.5 18 8C18 4.68629 15.3137 2 12 2Z"/>
+                </svg>
+            </div>
+            <span class="logo-text">CityFix</span>
+        </a>
+        
+<div class="nav-menu">
+            <a href="dashboard.html" class="nav-link">Tableau de bord</a>
+            <a href="map-view.html" class="nav-link">Carte</a>
+            <a href="admin-dashboard.html" id="adminLink" class="nav-link" style="display: none;">Admin</a>
+            <a href="#" id="logoutBtn" class="btn btn-secondary" style="padding: 0.5rem 1rem;">Déconnexion</a>
+        </div>
+    </nav>
+
+    <!-- Contenu principal -->
+    <div class="container">
+        <!-- En-tête -->
+        <div class="dashboard-header">
+            <div class="welcome-section">
+                <h1>Mon tableau de bord</h1>
+                <p>Gérez vos signalements et suivez leur évolution</p>
+            </div>
+            
+            <div class="actions">
+                <a href="creer-signalement.html" class="btn btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5V19M5 12H19"/>
+                    </svg>
+                    Nouveau signalement
+                </a>
+                <a href="map-view.html" class="btn btn-secondary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2C8.68629 2 6 4.68629 6 8C6 12.5 12 22 12 22C12 22 18 12.5 18 8C18 4.68629 15.3137 2 12 2Z"/>
+                    </svg>
+                    Voir la carte
+                </a>
+            </div>
+        </div>
+
+        <!-- Statistiques -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+                    </svg>
+                </div>
+                <div class="stat-number" id="totalCount">0</div>
+                <div class="stat-label">Total signalements</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 6v6l4 2"/>
+                    </svg>
+                </div>
+                <div class="stat-number" id="pendingCount">0</div>
+                <div class="stat-label">En attente</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon red">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 8v4M12 16h.01"/>
+                    </svg>
+                </div>
+                <div class="stat-number" id="inProgressCount">0</div>
+                <div class="stat-label">En cours</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <path d="M22 4L12 14.01l-3-3"/>
+                    </svg>
+                </div>
+                <div class="stat-number" id="resolvedCount">0</div>
+                <div class="stat-label">Résolus</div>
+            </div>
+        </div>
+
+        <!-- Liste des signalements -->
+        <h2 class="section-title">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+            </svg>
+            Mes signalements
+        </h2>
+        
+        <div id="signalements-list" class="signalements-grid">
+            <div class="loading-message">
+                <div class="spinner"></div>
+                <p>Chargement de vos signalements...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         SECTION JAVASCRIPT
+         Logique de récupération et affichage des données
+         ============================================ -->
+    <script>
+        /* 
+         * ÉVÉNEMENT AU CHARGEMENT DU DOM
+         * s'exécute quand tout le HTML est chargé
+         */
+        document.addEventListener('DOMContentLoaded', async () => {
+
+            /* 
+             * VÉRIFICATION DE L'UTILISATEUR CONNECTÉ
+             * On récupère les données utilisateur depuis le localStorage
+             */
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            /* 
+             * REDIRECTION SI NON CONNECTÉ
+             * Si pas d'utilisateur dans le localStorage, on redirige vers la connexion
+             */
+            if (!user || !user.id) {
+                window.location.href = 'connexion.html';
+                return;
+            }
+
+            /* 
+             * GESTION DE LA DÉCONNEXION
+             * Au clic sur le bouton logout, on efface les données et on redirige
+             */
+            document.getElementById('logoutBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('user');
+                window.location.href = 'connexion.html';
+            });
+
+            /* URL de l'API backend */
+            const API_URL = 'http://localhost:8083/CityFix';
+
+            /* Référence vers le conteneur de la liste des signalements */
+            const listContainer = document.getElementById('signalements-list');
+
+            // Variables pour les statistiques
+            let stats = { total: 0, pending: 0, inProgress: 0, resolved: 0 };
+
+            /* 
+             * FONCTION: fetchUserSignalements()
+             * Récupère les signalements de l'utilisateur connecté via l'API
+             */
+            async function fetchUserSignalements() {
+                try {
+                    const response = await fetch(`${API_URL}/api/signalements/utilisateur/${user.id}`);
+                    
+                    if (!response.ok) {
+                        throw new Error('Erreur lors de la récupération des signalements.');
+                    }
+                    
+                    const data = await response.json();
+                    
+                    // Calcul des statistiques
+                    stats.total = data.length;
+                    stats.pending = data.filter(s => s.statut === 'EN_ATTENTE').length;
+                    stats.inProgress = data.filter(s => s.statut === 'EN_COURS').length;
+                    stats.resolved = data.filter(s => s.statut === 'RESOLU').length;
+                    
+                    // Mise à jour des cartes de stats
+                    updateStats();
+                    
+                    // Affichage des signalements
+                    displaySignalements(data);
+                    
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    listContainer.innerHTML = `<p class="error-message">Impossible de charger vos signalements.</p>`;
+                }
+            }
+
+            /* 
+             * FONCTION: updateStats()
+             * Met à jour les cartes de statistiques
+             */
+            function updateStats() {
+                document.getElementById('totalCount').textContent = stats.total;
+                document.getElementById('pendingCount').textContent = stats.pending;
+                document.getElementById('inProgressCount').textContent = stats.inProgress;
+                document.getElementById('resolvedCount').textContent = stats.resolved;
+            }
+
+            /* 
+             * FONCTION: displaySignalements(signalements)
+             * Affiche les signalements dans le DOM sous forme de cartes
+             */
+            function displaySignalements(signalements) {
+                if (signalements.length === 0) {
+                    listContainer.innerHTML = `
+                        <div class="empty-state">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+                                <rect x="9" y="3" width="6" height="4" rx="1"/>
+                                <path d="M9 12h6M9 16h6"/>
+                            </svg>
+                            <h3>Aucun signalement</h3>
+                            <p>Vous n'avez pas encore créé de signalement.</p>
+                            <a href="creer-signalement.html" class="btn btn-primary">Créer un signalement</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                listContainer.innerHTML = '';
+
+                signalements.forEach(s => {
+                    const card = document.createElement('div');
+                    card.className = 'signalement-card';
+                    
+                    // Détermination du texte du statut
+                    let statusText = '';
+                    let statusClass = '';
+                    switch(s.statut) {
+                        case 'EN_ATTENTE': statusText = 'En attente'; statusClass = 'pending'; break;
+                        case 'EN_COURS': statusText = 'En cours'; statusClass = 'in-progress'; break;
+                        case 'RESOLU': statusText = 'Résolu'; statusClass = 'resolved'; break;
+                        default: statusText = s.statut; statusClass = 'pending';
+                    }
+
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <h3 class="card-title">${s.titre}</h3>
+                            <span class="card-type">${s.typeSignalement}</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-info">
+                                <div class="info-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <path d="M12 6v6l4 2"/>
+                                    </svg>
+                                    ${new Date(s.dateCreation).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                                </div>
+                                <div class="info-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 2C8.68629 2 6 4.68629 6 8C6 12.5 12 22 12 22C12 22 18 12.5 18 8C18 4.68629 15.3137 2 12 2Z"/>
+                                    </svg>
+                                    ${s.localisation?.adresse || 'Non spécifiée'}
+                                </div>
+                                <span class="status-badge ${statusClass}">
+                                    <span class="status-dot"></span>
+                                    ${statusText}
+                                </span>
+                            </div>
+                        </div>
+                    `;
+
+                    listContainer.appendChild(card);
+
+                    // Redirection vers les détails au clic
+                    card.addEventListener('click', () => {
+                        window.location.href = `details-signalements.html?id=${s.id}`;
+                    });
+                });
+            }
+
+// Lancement de la récupération des signalements
+            fetchUserSignalements();
+
+            // Afficher le lien vers le dashboard admin si l'utilisateur est admin
+            if (user.role === 'ADMIN') {
+                document.getElementById('adminLink').style.display = 'flex';
+            }
+            
+            // Ajouter le lien profil dans la navbar
+            const navMenu = document.querySelector('.nav-menu');
+            const profilLink = document.createElement('a');
+            profilLink.href = 'profil.html';
+            profilLink.className = 'nav-link';
+            profilLink.textContent = 'Profil';
+            navMenu.insertBefore(profilLink, document.getElementById('logoutBtn'));
+        });
+    </script>
+
+</body>
+</html>

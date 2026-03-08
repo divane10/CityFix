@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<!-- 
+    Page d'accueil du projet CityFix
+    Description : Landing page permettant aux utilisateurs de découvrir l'application et de se connecter ou s'inscrire
+-->
+<html lang="fr">
+<head>
+    <!-- Encodage des caractères UTF-8 pour supporter les caractères spéciaux français -->
+    <meta charset="UTF-8">
+    <!-- Meta viewport pour le responsive design sur mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Titre de la page affiché dans l'onglet du navigateur -->
+    <title>CityFix - Améliorez votre ville</title>
+    <meta name="description" content="Signalez les problèmes de voirie, de déchets ou d'éclairage en quelques clics. Contribuez à l'amélioration de votre environnement de vie.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A86FF' d='M12 2C8.68629 2 6 4.68629 6 8C6 12.5 12 22 12 22C12 22 18 12.5 18 8C18 4.68629 15.3137 2 12 2Z'/%3E%3C/svg%3E">
+
+    <!-- ============================================
+         SECTION DES STYLES CSS (FEUILLE DE STYLE)
+         ============================================ -->
+    <style>
+        /* Importation de la police Google Fonts "Poppins" avec plusieurs poids */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+        
+        /* 
+         * DEFINITION DES VARIABLES CSS (CUSTOM PROPERTIES)
+         * Ces variables permettent de centraliser les couleurs et de les réutiliser facilement
+         */
+        :root {
+            --color-primary: #3A86FF;        /* Bleu principal de la marque */
+            --color-primary-dark: #2563eb;   /* Bleu plus foncé pour les hover */
+            --color-primary-light: #60a5fa;  /* Bleu clair */
+            --color-secondary: #06D6A0;     /* Vert complémentaire */
+            --color-accent: #FFB700;         /* Or pour les accents */
+            --color-white: #FFFFFF;          /* Blanc pour les arrière-plans */
+            --color-dark: #1e293b;          /* Noir bleuté pour le texte principal */
+            --color-dark-secondary: #475569; /* Gris foncé pour le texte secondaire */
+            --color-light: #f8fafc;         /* Gris très clair pour les fonds */
+            --color-light-secondary: #e2e8f0; /* Gris clair secondaire */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 1rem;
+            --radius-xl: 1.5rem;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 
+         * STYLE GLOBAL DU BODY 
+         */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--color-dark);
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* 
+         * NAVIGATION
+         */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-md);
+        }
+
+        .logo-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--color-primary) 0%, #1d4ed8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--color-dark-secondary);
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--color-primary);
+            transition: var(--transition);
+        }
+
+        .nav-link:hover {
+            color: var(--color-primary);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* 
+         * CONTENEUR PRINCIPAL
+         */
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 6rem 2rem 2rem;
+        }
+
+        .hero {
+            max-width: 1200px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-content {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(58, 134, 255, 0.1);
+            color: var(--color-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--color-secondary);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: var(--color-dark);
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--color-dark-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* 
+         * STYLES DES BOUTONS
+         */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            color: var(--color-white);
+            box-shadow: 0 4px 14px 0 rgba(58, 134, 255, 0.39);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(58, 134, 255, 0.23);
+        }
+
+        .btn-secondary {
+            background: var(--color-white);
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-primary);
+            color: var(--color-white);
+            transform: translateY(-2px);
+        }
+
+        .btn-arrow {
+            transition: var(--transition);
+        }
+
+        .btn:hover .btn-arrow {
+            transform: translateX(4px);
+        }
+
+        /* 
+         * ILLUSTRATION
+         */
+        .hero-visual {
+            position: relative;
+            animation: fadeInRight 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .illustration-card {
+            background: var(--color-white);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .illustration-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        }
+
+        .city-illustration {
+            position: relative;
+            z-index: 1;
+            margin-top: 1rem;
+        }
+
+        .city-illustration svg {
+            width: 100%;
+            height: auto;
+        }
+
+        /* 
+         * STATISTIQUES
+         */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .stat-card {
+            background: var(--color-white);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: var(--color-dark-secondary);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        /* 
+         * RESPONSIVE DESIGN
+         */
+        @media (max-width: 1024px) {
+            .hero {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+                text-align: center;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+
+            .main-container {
+                padding: 5rem 1rem 1rem;
+            }
+        }
+
+        /* Menu mobile */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C8.68629 2 6 4.68629 6 8C6 12.5 12 22 12 22C12 22 18 12.5 18 8C18 4.68629 15.3137 2 12 2ZM12 11C10.3431 11 9 9.65685 9 8C9 6.34315 10.3431 5 12 5C13.6569 5 15 6.34315 15 8C15 9.65685 13.6569 11 12 11Z"/>
+                </svg>
+            </div>
+            <span class="logo-text">CityFix</span>
+        </a>
+        
+        <div class="nav-links">
+            <a href="map-view.html" class="nav-link">Carte</a>
+            <a href="connexion.html" class="nav-link">Connexion</a>
+            <a href="inscription.html" class="btn btn-primary">Commencer</a>
+        </div>
+
+        <button class="mobile-menu-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 6H20M4 12H20M4 18H20"/>
+            </svg>
+        </button>
+    </nav>
+
+    <!-- Contenu principal -->
+    <div class="main-container">
+        <div class="hero">
+            <!-- Contenu texte -->
+            <div class="hero-content">
+                <div class="badge">
+                    <span class="badge-dot"></span>
+                    Solution intelligente pour votre ville
+                </div>
+                
+                <h1>Améliorez votre ville, <span>un signalement à la fois</span></h1>
+                
+                <p>
+                    Signalez les problèmes de voirie, de déchets ou d'éclairage en quelques clics. 
+                    Contribuez à l'amélioration de votre environnement de vie et suivez l'évolution 
+                    de vos signalements en temps réel.
+                </p>
+                
+                <div class="hero-buttons">
+                    <a href="inscription.html" class="btn btn-primary">
+                        Signaler un problème
+                        <svg class="btn-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12H19M12 5L19 12L12 19"/>
+                        </svg>
+                    </a>
+                    <a href="map-view.html" class="btn btn-secondary">Voir la carte</a>
+                </div>
+            </div>
+
+            <!-- Illustration -->
+            <div class="hero-visual">
+                <div class="illustration-card">
+                    <div class="city-illustration">
+                        <svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Sky gradient -->
+                            <defs>
+                                <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#e0f2fe"/>
+                                    <stop offset="100%" style="stop-color:#f0f9ff"/>
+                                </linearGradient>
+                            </defs>
+                            <rect x="0" y="0" width="400" height="280" fill="url(#skyGradient)"/>
+                            
+                            <!-- Sun -->
+                            <circle cx="320" cy="50" r="30" fill="#fbbf24" opacity="0.9"/>
+                            
+                            <!-- Clouds -->
+                            <ellipse cx="80" cy="60" rx="40" ry="20" fill="white" opacity="0.8"/>
+                            <ellipse cx="100" cy="55" rx="30" ry="18" fill="white" opacity="0.8"/>
+                            <ellipse cx="60" cy="55" rx="25" ry="15" fill="white" opacity="0.8"/>
+                            
+                            <!-- Buildings -->
+                            <rect x="20" y="140" width="60" height="140" fill="#64748b" rx="4"/>
+                            <rect x="30" y="160" width="15" height="20" fill="#fbbf24" opacity="0.8" rx="2"/>
+                            <rect x="55" y="160" width="15" height="20" fill="#fbbf24" opacity="0.6" rx="2"/>
+                            
+                            <rect x="90" y="100" width="80" height="180" fill="#475569" rx="4"/>
+                            <rect x="100" y="120" width="20" height="25" fill="#94a3b8" rx="2"/>
+                            <rect x="130" y="120" width="20" height="25" fill="#94a3b8" rx="2"/>
+                            <rect x="100" y="160" width="20" height="25" fill="#94a3b8" rx="2"/>
+                            <rect x="130" y="160" width="20" height="25" fill="#94a3b8" rx="2"/>
+                            <rect x="100" y="200" width="20" height="25" fill="#94a3b8" rx="2"/>
+                            <rect x="130" y="200" width="20" height="25" fill="#94a3b8" rx="2"/>
+                            
+                            <rect x="180" y="120" width="70" height="160" fill="#334155" rx="4"/>
+                            <rect x="195" y="140" width="40" height="30" fill="#3b82f6" opacity="0.7" rx="2"/>
+                            
+                            <rect x="260" y="80" width="90" height="200" fill="#1e293b" rx="4"/>
+                            <rect x="275" y="100" width="60" height="40" fill="#60a5fa" opacity="0.6" rx="2"/>
+                            <rect x="275" y="150" width="60" height="40" fill="#60a5fa" opacity="0.4" rx="2"/>
+                            <rect x="275" y="200" width="60" height="40" fill="#60a5fa" opacity="0.5" rx="2"/>
+                            
+                            <rect x="360" y="150" width="40" height="130" fill="#94a3b8" rx="4"/>
+                            
+                            <!-- Trees -->
+                            <circle cx="50" cy="270" r="15" fill="#22c55e"/>
+                            <circle cx="70" cy="275" r="12" fill="#16a34a"/>
+                            <circle cx="240" cy="275" r="15" fill="#22c55e"/>
+                            
+                            <!-- Ground -->
+                            <rect x="0" y="270" width="400" height="10" fill="#22c55e"/>
+                            
+                            <!-- Road -->
+                            <rect x="0" y="250" width="400" height="20" fill="#374151"/>
+                            <line x1="0" y1="260" x2="400" y2="260" stroke="#fbbf24" stroke-width="2" stroke-dasharray="20,10"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistiques -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number">5000+</div>
+                <div class="stat-label">Signalements traités</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">1200+</div>
+                <div class="stat-label">Utilisateurs actifs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">98%</div>
+                <div class="stat-label">Problèmes résolus</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

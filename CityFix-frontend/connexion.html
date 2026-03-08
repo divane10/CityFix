@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<!-- 
+    Page de connexion - CityFix
+    Description : Formulaire d'authentification moderne pour les utilisateurs existants
+-->
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - CityFix</title>
+    <meta name="description" content="Connectez-vous à votre compte CityFix">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A86FF' d='M12 2C8.68629 2 6 4.68629 6 8C6 12.5 12 22 12 22C12 22 18 12.5 18 8C18 4.68629 15.3137 2 12 2Z'/%3E%3C/svg%3E">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+
+        :root {
+            --color-primary: #3A86FF;
+            --color-primary-dark: #2563eb;
+            --color-primary-light: #60a5fa;
+            --color-white: #FFFFFF;
+            --color-dark: #1e293b;
+            --color-dark-secondary: #475569;
+            --color-light: #f8fafc;
+            --color-light-secondary: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 440px;
+        }
+
+        .login-card {
+            background: var(--color-white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            padding: 2.5rem;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-md);
+        }
+
+        .logo-icon svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .logo-text {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--color-primary) 0%, #1d4ed8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .login-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: var(--color-dark-secondary);
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--color-dark);
+            font-size: 0.9rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper svg {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            color: var(--color-dark-secondary);
+            transition: var(--transition);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 3rem;
+            border: 2px solid var(--color-light-secondary);
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: var(--transition);
+            background: var(--color-light);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            background: var(--color-white);
+            box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.1);
+        }
+
+        .form-group input:focus + svg,
+        .input-wrapper:focus-within svg {
+            color: var(--color-primary);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            color: var(--color-white);
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 0.5rem;
+            box-shadow: 0 4px 14px 0 rgba(58, 134, 255, 0.3);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(58, 134, 255, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--color-light-secondary);
+        }
+
+        .divider span {
+            color: var(--color-dark-secondary);
+            font-size: 0.85rem;
+        }
+
+        .signup-link {
+            text-align: center;
+            color: var(--color-dark-secondary);
+            font-size: 0.9rem;
+        }
+
+        .signup-link a {
+            color: var(--color-primary);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .signup-link a:hover {
+            color: var(--color-primary-dark);
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: rgba(255, 77, 77, 0.1);
+            color: #dc2626;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: none;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .back-home a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--color-dark-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .back-home a:hover {
+            color: var(--color-primary);
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">
+                        <svg viewBox="0 0 24 24" fill="white">
+                            <path d="M12 2C8.68629 2 6 4.68629 6 8C6 12.5 12 22 12 22C12 22 18 12.5 18 8C18 4.68629 15.3137 2 12 2Z"/>
+                        </svg>
+                    </div>
+                    <span class="logo-text">CityFix</span>
+                </a>
+                <h1>Bon retour !</h1>
+                <p>Connectez-vous pour gérer vos signalements</p>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+
+            <form id="connexionForm">
+                <div class="form-group">
+                    <label for="email">Adresse email</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="email" name="email" placeholder="vous@exemple.com" required>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                            <path d="M22 6l-10 7L2 6"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="motDePasse">Mot de passe</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="motDePasse" name="motDePasse" placeholder="••••••••" required>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">Se connecter</button>
+            </form>
+
+            <div class="divider">
+                <span>ou</span>
+            </div>
+
+            <p class="signup-link">
+                Pas encore de compte ? <a href="inscription.html">Créer un compte</a>
+            </p>
+
+            <div class="back-home">
+                <a href="index.html">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                    Retour à l'accueil
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('connexionForm');
+            const errorMessage = document.getElementById('errorMessage');
+            const API_URL = 'http://localhost:8083/CityFix';
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const email = document.getElementById('email').value;
+                const motDePasse = document.getElementById('motDePasse').value;
+
+                try {
+                    const response = await fetch(`${API_URL}/connexion`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email, motDePasse })
+                    });
+
+if (response.ok) {
+                        const user = await response.json();
+                        localStorage.setItem('user', JSON.stringify(user));
+                        
+                        // Redirection basée sur le rôle
+                        if (user.role === 'ADMIN') {
+                            window.location.href = 'admin-dashboard.html';
+                        } else {
+                            window.location.href = 'dashboard.html';
+                        }
+                    } else {
+                        const errorText = await response.text();
+                        errorMessage.textContent = errorText || 'Email ou mot de passe incorrect';
+                        errorMessage.style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    errorMessage.textContent = 'Erreur de connexion. Veuillez vérifier que le serveur est démarré.';
+                    errorMessage.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

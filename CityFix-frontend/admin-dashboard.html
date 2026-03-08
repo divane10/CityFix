@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<!-- 
+    Page Tableau de bord Administrateur - CityFix
+    Description : Interface d'administration pour gérer tous les signalements avec fonctionnalités de recherche et filtrage
+-->
+<html lang="fr">
+<head>
+     <!-- ============================================
+          MÉTADONNÉES DE LA PAGE
+          ============================================ -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord Admin - CityFix</title>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
+        
+        :root {
+            --color-blue: #3A86FF;
+            --color-white: #FFFFFF;
+            --color-dark-grey: #222222;
+            --color-light-grey: #F0F0F0;
+            --color-green: #06D6A0;
+            --color-orange: #FFB700;
+            --color-red: #FF4D4D;
+            --color-accent: #E5E9F0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--color-dark-grey);
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-light-grey);
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--color-white);
+            height: 100vh;
+            padding: 30px 20px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: fixed;
+        }
+          
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-dark-grey);
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            gap: 15px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #555;
+            font-weight: 600;
+            padding: 15px 20px;
+            border-radius: 10px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--color-blue);
+            color: var(--color-white);
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 40px;
+            background-color: var(--color-light-grey);
+            margin-left: 250px;
+        }
+
+        .header-dashboard {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header-dashboard h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--color-dark-grey);
+        }
+
+        .btn-logout {
+            padding: 0.5rem 1rem;
+            background: var(--color-red);
+            color: var(--color-white);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .btn-logout:hover {
+            background: #dc2626;
+        }
+
+        .search-and-filter {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .search-and-filter input,
+        .search-and-filter select {
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            font-size: 0.95rem;
+            background-color: var(--color-white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-and-filter input:focus,
+        .search-and-filter select:focus {
+            outline: none;
+            border-color: var(--color-blue);
+            box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.1);
+        }
+
+        .search-and-filter input {
+            flex-grow: 1;
+            min-width: 250px;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--color-white);
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .stat-item:hover, .stat-item.active {
+            border-color: var(--color-blue);
+            background: rgba(58, 134, 255, 0.05);
+        }
+
+        .stat-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .stat-dot.all { background: var(--color-blue); }
+        .stat-dot.pending { background: var(--color-orange); }
+        .stat-dot.progress { background: var(--color-red); }
+        .stat-dot.resolved { background: var(--color-green); }
+
+        .signalements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .signalement-card {
+            background-color: var(--color-white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .signalement-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            background: var(--color-light-grey);
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .signalement-card h3 {
+            font-size: 1.1rem;
+            margin: 0 0 8px 0;
+            font-weight: 600;
+            color: var(--color-dark-grey);
+        }
+
+        .signalement-card .type {
+            display: inline-block;
+            font-size: 0.75rem;
+            color: var(--color-blue);
+            background: rgba(58, 134, 255, 0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .signalement-card p {
+            margin: 0 0 8px 0;
+            font-size: 0.85rem;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .signalement-card p svg {
+            width: 14px;
+            height: 14px;
+            opacity: 0.7;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .user-info-card {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .user-info-card strong {
+            color: var(--color-dark-grey);
+        }
+
+        .status-tag {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: var(--color-white);
+            text-transform: uppercase;
+        }
+
+        .status-tag.EN_ATTENTE { background-color: var(--color-orange); }
+        .status-tag.EN_COURS { background-color: var(--color-red); }
+        .status-tag.RESOLU { background-color: var(--color-green); }
+
+        .loading-message, .error-message, .no-results {
+            text-align: center;
+            font-style: italic;
+            margin-top: 40px;
+            font-size: 1.1rem;
+            color: #666;
+        }
+        
+        .error-message {
+            color: var(--color-red);
+        }
+        
+        .icon-svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            .signalements-grid {
+                grid-template-columns: 1fr;
+            }
+            .search-and-filter {
+                flex-direction: column;
+            }
+            .search-and-filter input,
+            .search-and-filter select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo">
+            <svg class="logo-svg" width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C8.68629 2 6 4.68629 6 8C6 12.5 12 22 12 22C12 22 18 12.5 18 8C18 4.68629 15.3137 2 12 2ZM12 11C10.3431 11 9 9.65685 9 8C9 6.34315 10.3431 5 12 5C13.6569 5 15 6.34315 15 8C15 9.65685 13.6569 11 12 11Z" fill="#3A86FF"/>
+            </svg>
+            <span class="logo-text">CityFix</span>
+        </div>
+        
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">
+                <svg class="icon-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8h5z"/></svg>
+                Accueil
+            </a>
+            <a href="admin-dashboard.html" class="nav-link active">
+                <svg class="icon-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h7V2H4a2 2 0 0 0-2 2v7h2V4Zm14-2h-7v2h7a2 2 0 0 1 2 2v7h2V4a2 2 0 0 0-2-2ZM4 20h7v2H4a2 2 0 0 1-2-2v-7h2v7Zm14 2h-7v-2h7a2 2 0 0 0 2-2v-7h2v7a2 2 0 0 1-2 2Z"/></svg>
+                Tableau de bord
+            </a>
+            <a href="creer-signalement.html" class="nav-link">
+                <svg class="icon-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                Créer
+            </a>
+            <a href="map-view.html" class="nav-link">
+                <svg class="icon-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.68629 2 6 4.68629 6 6 2C6 2h
+ 12 2C8.68629 2 6 4.68629 6 8C6 12.5 12 22 12 22C12 22 18 12.5 18 8C18 4.68629 15.3137 2 12 2Z"/></svg>
+                Carte
+            </a>
+            <a href="profil.html" class="nav-link">
+                <svg class="icon-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8ZM2 20a10 10 0 1 1 20 0H2Z"/></svg>
+                Profil
+            </a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <header class="header-dashboard">
+            <h1>Tableau de bord Admin</h1>
+            <div class="user-info">
+                <span class="user-name" id="userName">Admin</span>
+                <a href="connexion.html" id="logoutBtn" class="btn-logout">Déconnexion</a>
+            </div>
+        </header>
+
+        <div class="search-and-filter">
+            <input type="text" id="searchInput" placeholder="Rechercher par titre ou description...">
+            <select id="typeFilter">
+                <option value="">Tous les types</option>
+                <option value="Voirie">Voirie</option>
+                <option value="Dechets">Déchets</option>
+                <option value="Eclairage">Éclairage</option>
+                <option value="NidDePoule">Nid de poule</option>
+                <option value="Securite_et_ordre_public">Sécurité</option>
+                <option value="Eau">Eau</option>
+                <option value="Poteau_encombrant">Poteau encombrant</option>
+                <option value="Désordre_urbain">Désordre urbain</option>
+            </select>
+            <select id="statusFilter">
+                <option value="">Tous les statuts</option>
+                <option value="EN_ATTENTE">En attente</option>
+                <option value="EN_COURS">En cours</option>
+                <option value="RESOLU">Résolu</option>
+            </select>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item active" data-filter="">
+                <span class="stat-dot all"></span>
+                <span>Tous (<span id="countAll">0</span>)</span>
+            </div>
+            <div class="stat-item" data-filter="EN_ATTENTE">
+                <span class="stat-dot pending"></span>
+                <span>En attente (<span id="countPending">0</span>)</span>
+            </div>
+            <div class="stat-item" data-filter="EN_COURS">
+                <span class="stat-dot progress"></span>
+                <span>En cours (<span id="countProgress">0</span>)</span>
+            </div>
+            <div class="stat-item" data-filter="RESOLU">
+                <span class="stat-dot resolved"></span>
+                <span>Résolus (<span id="countResolved">0</span>)</span>
+            </div>
+        </div>
+
+        <div id="signalements-list" class="signalements-grid">
+            <p class="loading-message">Chargement des signalements...</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Vérification de l'utilisateur connecté
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            // Redirection si non connecté
+            if (!user || !user.id) {
+                window.location.href = 'connexion.html';
+                return;
+            }
+
+            // Vérification du rôle ADMIN
+            if (user.role !== 'ADMIN') {
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            // Afficher le nom de l'admin
+            document.getElementById('userName').textContent = user.prenom || 'Admin';
+
+            // Gestion de la déconnexion
+            document.getElementById('logoutBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('user');
+                window.location.href = 'connexion.html';
+            });
+
+            const API_URL = 'http://localhost:8083/CityFix';
+            let allSignalements = [];
+
+            // Éléments du DOM
+            const searchInput = document.getElementById('searchInput');
+            const typeFilter = document.getElementById('typeFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            const listContainer = document.getElementById('signalements-list');
+            const statItems = document.querySelectorAll('.stat-item');
+
+            // Compteurs
+            const countAll = document.getElementById('countAll');
+            const countPending = document.getElementById('countPending');
+            const countProgress = document.getElementById('countProgress');
+            const countResolved = document.getElementById('countResolved');
+
+            async function fetchAllSignalements() {
+                try {
+                    const response = await fetch(`${API_URL}/api/signalements`);
+                    
+                    if (!response.ok) {
+                        throw new Error('Erreur lors de la récupération des signalements.');
+                    }
+                    
+                    allSignalements = await response.json();
+                    updateStats();
+                    filterAndDisplay();
+                    
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    listContainer.innerHTML = '<p class="error-message">Impossible de charger les signalements.</p>';
+                }
+            }
+
+            function updateStats() {
+                countAll.textContent = allSignalements.length;
+                countPending.textContent = allSignalements.filter(s => s.statut === 'EN_ATTENTE').length;
+                countProgress.textContent = allSignalements.filter(s => s.statut === 'EN_COURS').length;
+                countResolved.textContent = allSignalements.filter(s => s.statut === 'RESOLU').length;
+            }
+
+            function filterAndDisplay() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const typeValue = typeFilter.value;
+                const statusValue = statusFilter.value;
+
+                let filtered = allSignalements.filter(s => {
+                    // Filtre par recherche (titre ou description)
+                    const matchesSearch = !searchTerm || 
+                        (s.titre && s.titre.toLowerCase().includes(searchTerm)) ||
+                        (s.description && s.description.toLowerCase().includes(searchTerm));
+                    
+                    // Filtre par type
+                    const matchesType = !typeValue || s.typeSignalement === typeValue;
+                    
+                    // Filtre par statut
+                    const matchesStatus = !statusValue || s.statut === statusValue;
+
+                    return matchesSearch && matchesType && matchesStatus;
+                });
+
+                displaySignalements(filtered);
+            }
+
+            function displaySignalements(signalements) {
+                if (signalements.length === 0) {
+                    listContainer.innerHTML = '<p class="no-results">Aucun signalement trouvé correspondant à vos critères.</p>';
+                    return;
+                }
+
+                listContainer.innerHTML = '';
+
+                signalements.forEach(s => {
+                    const card = document.createElement('div');
+                    card.className = 'signalement-card';
+                    
+                    let statusText = '';
+                    let statusClass = '';
+                    switch(s.statut) {
+                        case 'EN_ATTENTE': statusText = 'En attente'; statusClass = 'EN_ATTENTE'; break;
+                        case 'EN_COURS': statusText = 'En cours'; statusClass = 'EN_COURS'; break;
+                        case 'RESOLU': statusText = 'Résolu'; statusClass = 'RESOLU'; break;
+                        default: statusText = s.statut; statusClass = 'EN_ATTENTE';
+                    }
+
+                    // Récupérer l'image ou mettre une image par défaut
+                    const defaultImage = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="%23e0e0e0"%3E%3Cpath d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/%3E%3C/svg%3E';
+                    
+                    // Construire l'URL de la photo
+                    let imageUrl = defaultImage;
+                    if (s.photo) {
+                        imageUrl = `${API_URL}/api/signalements/photo/${s.photo}`;
+                    } else if (s.photoUrl) {
+                        // photoUrl contient maintenant le nom du fichier, construire l'URL complète
+                        imageUrl = `${API_URL}/api/signalements/photo/${s.photoUrl}`;
+                    } else if (s.imageUrl) {
+                        imageUrl = s.imageUrl;
+                    }
+
+                    // Informations utilisateur
+                    const userPrenom = s.utilisateur?.prenom || 'Inconnu';
+                    const userNom = s.utilisateur?.nom || '';
+
+                    card.innerHTML = `
+                        <img src="${imageUrl}" alt="${s.titre}" class="card-image" onerror="this.src='${defaultImage}'">
+                        <div class="card-content">
+                            <h3>${s.titre}</h3>
+                            <span class="type">${s.typeSignalement}</span>
+                            <p>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                    <circle cx="12" cy="10" r="3"/>
+                                </svg>
+                                ${s.localisation?.adresse || 'Non spécifiée'}
+                            </p>
+                            <p>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                    <line x1="16" y1="2" x2="16" y2="6"/>
+                                    <line x1="8" y1="2" x2="8" y2="6"/>
+                                    <line x1="3" y1="10" x2="21" y2="10"/>
+                                </svg>
+                                ${new Date(s.dateCreation).toLocaleDateString('fr-FR')}
+                            </p>
+                            <div class="card-footer">
+                                <div class="user-info-card">
+                                    Par <strong>${userPrenom} ${userNom}</strong>
+                                </div>
+                                <span class="status-tag ${statusClass}">${statusText}</span>
+                            </div>
+                        </div>
+                    `;
+
+                    listContainer.appendChild(card);
+
+                    card.addEventListener('click', () => {
+                        window.location.href = `details-signalements.html?id=${s.id}`;
+                    });
+                });
+            }
+
+            // Écouteurs d'événements pour les filtres
+            searchInput.addEventListener('input', filterAndDisplay);
+            typeFilter.addEventListener('change', filterAndDisplay);
+            statusFilter.addEventListener('change', filterAndDisplay);
+
+            // Statut bar clicks
+            statItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    // Retirer active de tous
+                    statItems.forEach(i => i.classList.remove('active'));
+                    // Ajouter active à l'élément cliqué
+                    item.classList.add('active');
+                    
+                    const filter = item.dataset.filter;
+                    statusFilter.value = filter;
+                    filterAndDisplay();
+                });
+            });
+
+            fetchAllSignalements();
+        });
+    </script>
+</body>
+</html>
