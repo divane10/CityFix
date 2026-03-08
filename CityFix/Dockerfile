@@ -1,23 +1,23 @@
-# Image Java officielle
-FROM eclipse-temurin:17-jdk-alpine
+# ---------- Build Stage ----------
+FROM maven:3.9-eclipse-temurin-17 AS build
 
-# Créer le dossier /app dans le conteneur
 WORKDIR /app
 
-# Copier uniquement les fichiers nécessaires depuis CityFix
-COPY CityFix/mvnw .
-COPY CityFix/.mvn .mvn
+# Copier le projet Spring Boot
 COPY CityFix/pom.xml .
 COPY CityFix/src ./src
 
-# Donner les permissions d'exécution au wrapper Maven
-RUN chmod +x mvnw
+# Construire l'application
+RUN mvn clean package -DskipTests
 
-# Construire le projet Spring Boot
-RUN ./mvnw clean package -DskipTests
+# ---------- Runtime Stage ----------
+FROM eclipse-temurin:17-jdk-alpine
 
-# Exposer le port de l'application
+WORKDIR /app
+
+# Copier le jar généré
+COPY --from=build /app/target/*.jar app.jar
+
 EXPOSE 8083
 
-# Démarrer l'application
-CMD ["sh", "-c", "java -jar target/*.jar"]
+CMD ["java", "-jar", "app.jar"]
