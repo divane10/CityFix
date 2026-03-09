@@ -14,35 +14,33 @@ import com.quamtechs.CityFix.Service.UtilisateurService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api/utilisateurs")
 @RequiredArgsConstructor
 public class UtilisateurController {
 
     private final UtilisateurService utilisateurService;
 
-    //Inscription d'un utilisateur
-
+    // Inscription d'un utilisateur
     @PostMapping("/inscription")
     public ResponseEntity<Utilisateur> inscrire(@RequestBody UtilisateurDto util) {
-       Utilisateur user =utilisateurService.inscrire(util);
+        Utilisateur user = utilisateurService.inscrire(util);
         return ResponseEntity.ok(user);
     }
 
-    //Connexion d'un utilisateur
+    // Connexion d'un utilisateur
+    @PostMapping("/connexion")
+    public ResponseEntity<?> connecter(@RequestBody Map<String, String> creds) {
 
-  @PostMapping("/connexion")
-public ResponseEntity<?> connecter(@RequestBody Map<String, String> creds) {
-    String email = creds.get("email");
-    String motDePasse = creds.get("motDePasse");
+        String email = creds.get("email");
+        String motDePasse = creds.get("motDePasse");
 
-    Optional<Utilisateur> userOpt = utilisateurService.connecter(email, motDePasse);
+        Optional<Utilisateur> userOpt = utilisateurService.connecter(email, motDePasse);
 
-    if (userOpt.isPresent()) {
-        return ResponseEntity.ok(userOpt.get());
-    } else {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                             .body("Identifiants invalides");
+        if (userOpt.isPresent()) {
+            return ResponseEntity.ok(userOpt.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                 .body("Identifiants invalides");
+        }
     }
-}
-
 }
