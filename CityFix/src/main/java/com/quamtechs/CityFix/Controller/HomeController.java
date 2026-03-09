@@ -1,3 +1,4 @@
+package com.quamtechs.CityFix.Controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -6,11 +7,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String home() {
-        return "redirect:/index.html";
+        return "forward:/index.html";
     }
 
-    @GetMapping("/index.html")
-    public String indexPage() {
-        return "redirect:/index.html";
-    }
 }
