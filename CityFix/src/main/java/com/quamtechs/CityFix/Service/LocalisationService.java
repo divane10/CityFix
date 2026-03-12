@@ -17,20 +17,14 @@ public class LocalisationService {
 
     private final LocalisationRepository localisationRepository;
 
-    public Localisation enregistrer(Localisation localisation) {
-        Localisation loc =Localisation.builder()
-        .adresse(localisation.getAdresse())
-        .lattitude(localisation.getLattitude())
-        .longitude(localisation.getLongitude())
-        .build();
+public Localisation enregistrer(Localisation localisation) {
+        Localisation loc = Localisation.builder()
+            .adresse(localisation.getAdresse() != null ? localisation.getAdresse() : "Localisation GPS (lat/lng)")
+            .lattitude(localisation.getLattitude())
+            .longitude(localisation.getLongitude())
+            .build();
         
         return localisationRepository.save(loc);
-
-
-
-
-
-        //return localisationRepository.save(localisation);
     }
 
     public Optional<Localisation> getParId(Long id) {

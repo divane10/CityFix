@@ -2,6 +2,7 @@ package com.quamtechs.CityFix.Controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,8 +33,19 @@ public class LocalisationController {
     }
 
     // creer une nouvelle localisation 
-    @PostMapping("/creer")
+@PostMapping("/creer")
     public ResponseEntity<Localisation> creer(@RequestBody Localisation localisation) {
-        return ResponseEntity.ok(localisationService.enregistrer(localisation));
+        try {
+            System.out.println("Creating localisation: lat=" + localisation.getLattitude() + 
+                             ", lng=" + localisation.getLongitude() + 
+                             ", addr=" + localisation.getAdresse());
+            Localisation saved = localisationService.enregistrer(localisation);
+            System.out.println("Localisation saved with ID: " + saved.getId());
+            return ResponseEntity.ok(saved);
+        } catch (Exception e) {
+            System.err.println("ERROR creating localisation: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }
