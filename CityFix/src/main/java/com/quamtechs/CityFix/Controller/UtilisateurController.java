@@ -21,10 +21,36 @@ public class UtilisateurController {
     private final UtilisateurService utilisateurService;
 
     // Inscription d'un utilisateur
-    @PostMapping("/inscription")
-    public ResponseEntity<Utilisateur> inscrire(@RequestBody UtilisateurDto util) {
-        Utilisateur user = utilisateurService.inscrire(util);
-        return ResponseEntity.ok(user);
+@PostMapping("/inscription")
+    public ResponseEntity<?> inscrire(@RequestBody UtilisateurDto util) {
+        try {
+            System.out.println("Inscription attempt: " + util.getEmail() + " role=" + util.getRole());
+            Utilisateur user = utilisateurService.inscrire(util);
+            System.out.println("User created ID: " + user.getId());
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            System.err.println("Inscription ERROR: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Erreur inscription: " + e.getMessage());
+        }
+    }
+
+    // Super Admin creation (master key protected)
+    @PostMapping("/superadmin/create")
+    public ResponseEntity<?> createSuperAdmin(
+            @RequestBody Map<String, String> request,
+            @RequestParam String masterKey) {
+        
+        if (!"supersecret2024".equals(masterKey)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Master key invalide");
+        }
+        
+        String email = request.get("email");
+        String password = request.get("motDePasse");
+        
+        Utilisateur superAdmin = utilisateurService.createSuperAdmin(email, password);
+        return ResponseEntity.ok(superAdmin);
     }
 
     // Connexion d'un utilisateur

@@ -49,6 +49,22 @@ public Utilisateur inscrire(UtilisateurDto dto) {
 
     // Connexion d'un utilisateur
 
+    public Utilisateur createSuperAdmin(String email, String motDePasse) {
+        if (utilisateurRepo.findByEmail(email).isPresent()) {
+            throw new RuntimeException("Email déjà utilisé");
+        }
+        
+        Utilisateur superAdmin = Utilisateur.builder()
+            .email(email)
+            .motDePasse(motDePasse)
+            .nom("Super Admin")
+            .prenom("SYS")
+            .role(Role.SUPER_ADMIN)
+            .build();
+            
+        return utilisateurRepo.save(superAdmin);
+    }
+
     public Optional<Utilisateur> connecter(String email, String motDePasse) {
         return utilisateurRepo.findByEmail(email)
                 .filter(u -> u.getMotDePasse().equals(motDePasse));
