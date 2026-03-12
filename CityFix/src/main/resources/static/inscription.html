@@ -434,12 +434,12 @@
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({ 
+body: JSON.stringify({ 
                             prenom, 
                             nom, 
                             email, 
                             motDePasse,
-                            role: role 
+                            role: role === 'UTILISATEUR' ? 'USER' : 'ADMIN'
                         })
                     });
 

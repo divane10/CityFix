@@ -9,13 +9,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class UtilisateurDto {
 
     private String prenom;
     private String nom;
     private String email;
     private String motDePasse;
-    private Role role; // ADMIN ou USER
+    private Role role = Role.USER; // Par défaut USER
 
 }

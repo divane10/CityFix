@@ -23,15 +23,19 @@ public class UtilisateurService {
     //private String nom;
     //private String email
 
-    public Utilisateur inscrire(UtilisateurDto dto) {
+public Utilisateur inscrire(UtilisateurDto dto) {
+        // Vérif unique email
+        if (utilisateurRepo.findByEmail(dto.getEmail()).isPresent()) {
+            throw new RuntimeException("Email déjà utilisé");
+        }
       
-        Utilisateur user =Utilisateur.builder()
-        .email(dto.getEmail())
-        .motDePasse(dto.getMotDePasse())
-        .nom(dto.getNom())
-        .prenom(dto.getPrenom())
-        .role(dto.getRole() != null ? dto.getRole() : Role.USER)// Par défaut USER
-        .build();
+        Utilisateur user = Utilisateur.builder()
+            .email(dto.getEmail())
+            .motDePasse(dto.getMotDePasse())
+            .nom(dto.getNom())
+            .prenom(dto.getPrenom())
+            .role(dto.getRole() != null ? dto.getRole() : Role.USER)
+            .build();
         return utilisateurRepo.save(user);
     }
     //public Utilisateur inscrire(Utilisateur util) {
