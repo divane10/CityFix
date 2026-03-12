@@ -369,7 +369,9 @@ if (response.ok) {
                         localStorage.setItem('user', JSON.stringify(user));
                         
                         // Redirection basée sur le rôle
-                        if (user.role === 'ADMIN') {
+                        if (user.role === 'SUPER_ADMIN') {
+                            window.location.href = 'super-admin.html';
+                        } else if (user.role === 'ADMIN') {
                             window.location.href = 'admin-dashboard.html';
                         } else {
                             window.location.href = 'dashboard.html';
