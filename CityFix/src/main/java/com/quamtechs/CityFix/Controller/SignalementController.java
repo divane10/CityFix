@@ -46,7 +46,8 @@ public class SignalementController {
 
     private final SignalementRepository signalementRepo;
     private final SignalementService signalementService;
-    private final String uploadDir = "uploads/";
+private final String uploadDir = System.getenv("UPLOAD_DIR") != null ? 
+    System.getenv("UPLOAD_DIR") : "/app/uploads/";
 
     //creer un signalement lié a un utilisateur:
      // Créer un signalement avec photo
