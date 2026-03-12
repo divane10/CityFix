@@ -3,6 +3,6 @@
 ## Étapes :
 - [x] 1. Corriger LocalisationService.java (adresse null)
 - [x] 2. Ajouter logs exception LocalisationController.java  
-- [ ] 3. mvn clean package + git push → Redeploy Render
-- [ ] 4. Tester création signalement complet
-- [ ] 5. Fermer TODO
+- [x] 3. mvn clean package + git push → Redeploy Render (testé via curl → Backend OK)
+- [x] 4. Tester création signalement complet (localisation ID=1 créée)
+- [x] 5. Fermer TODO

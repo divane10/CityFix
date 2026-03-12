@@ -607,8 +607,8 @@
                 marker = L.marker([lat, lng]).addTo(map);
 
                 try {
-                    const locationData = { lattitude: lat, longitude: lng };
-                    const response = await fetch(`${API_URL}/creer`, {
+                    const locationData = { lattitude: lat, longitude: lng } 
+                    const response = await fetch(`${API_URL}/localisations/creer`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(locationData)
